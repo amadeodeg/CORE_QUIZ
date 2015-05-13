@@ -8,7 +8,6 @@ exports.show = function(req, res) {
 
 
 exports.answer = function (req, res) {
-	console.log("MIRA AQUI");
 	models.Quiz.find(req.params.quizId).then(function(quiz) {
 		console.log("Respuesta recibida---"+ req.query.respuesta);
 		if (req.query.respuesta === quiz.respuesta){
@@ -21,9 +20,23 @@ exports.answer = function (req, res) {
 
 
 exports.index = function (req, res) {
-	models.Quiz.findAll().then(function(quizes) {
-		res.render('quizes/index', {quizes: quizes});
-	})
+	if(req.query.search!==undefined){
+		var patron = '%'+req.query.search.replace(' ','%')+'%';
+		models.Quiz.findAll({where: ["pregunta like ?", patron]}).then(function(quizes){
+			quizes.sort(
+			//	function(x,y){
+			// 	if(x.pregunta>y.pregunta) return 1;
+			// 	if(x.pregunta<y.pregunta) return -1;
+			// 	return 0;
+			// }
+			);
+			res.render('quizes/index', {quizes: quizes});
+		});
+	}else{
+		models.Quiz.findAll().then(function(quizes) {
+			res.render('quizes/index', {quizes: quizes});
+		});
+	}
 };
 
 
