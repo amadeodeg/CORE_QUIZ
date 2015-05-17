@@ -18,11 +18,11 @@ exports.index = function (req, res) {
 		var patron = '%'+req.query.search.replace(' ','%')+'%';
 		models.Quiz.findAll({where: ["pregunta like ?", patron]}).then(function(quizes){
 			quizes.sort(
-			//	function(x,y){
-			// 	if(x.pregunta>y.pregunta) return 1;
-			// 	if(x.pregunta<y.pregunta) return -1;
-			// 	return 0;
-			// }
+				function(x,y){
+				if(x.pregunta>y.pregunta) return 1;
+				if(x.pregunta<y.pregunta) return -1;
+				return 0;
+			}
 			);
 			res.render('quizes/index', {quizes: quizes});
 		});//.catch(function(error){next(error);});
