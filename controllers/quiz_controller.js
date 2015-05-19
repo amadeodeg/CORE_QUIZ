@@ -76,20 +76,27 @@ exports.create = function (req, res){
 
 
 
-// // GET /quizes/question
-// exports.question = function(req, res) {
-//   models.Quiz.findAll().success(function(quiz) {
-//     res.render('quizes/question', { pregunta: quiz[0].pregunta});
-//   })
-// };
+exports.edit = function(req, res) {
+	var quiz = req.quiz; 
 
-// // GET /quizes/answer
-// exports.answer = function(req, res) {
-//   models.Quiz.findAll().success(function(quiz) {
-//     if (req.query.respuesta === quiz[0].respuesta) {
-//       res.render('quizes/answer', { respuesta: 'Correcto' });
-//     } else {
-//       res.render('quizes/answer', { respuesta: 'Incorrecto'});
-//     }
-//   })
-// };
+	res.render('quizes/edit', {quiz: quiz, errors: []});
+};
+
+
+exports.update = function(req, res){
+	req.quiz.pregunta = req.body.quiz.pregunta;
+	req.quiz.respuesta = req.body.quiz.respuesta;
+	console.log("hola");
+	req.quiz
+	.validate()
+	.then(
+		function(err){
+			if(err) {
+				res.render('quizes/edit', {quiz: req.quiz, errors: err.errors});
+			} else {
+				req.quiz
+				.save( {fields: ["pregunta", "respuesta"]} )
+				.then( function(){ res.redirect('/quizes');});
+			}
+		});
+};
