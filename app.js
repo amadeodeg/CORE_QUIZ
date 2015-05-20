@@ -41,6 +41,20 @@ app.use(function(req, res, next){
     next();
 });
 
+app.use(function(req, res, next){
+    var user = req.session.user;
+    if(user){
+        var nowTime = new Date().getTime();
+        if(nowTime-user.time>120000){
+            delete req.session.user;
+        } else {
+            req.session.user.time = nowTime;
+        }
+    }
+    next();
+});
+
+
 
 
 app.use('/', routes);
