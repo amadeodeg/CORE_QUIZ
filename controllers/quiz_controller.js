@@ -61,6 +61,7 @@ exports.new = function (req, res) {
 
 
 exports.create = function (req, res){
+	req.body.quiz.UserId = req.session.user.id;
 	var quiz = models.Quiz.build(req.body.quiz);
 
 	quiz
@@ -71,10 +72,10 @@ exports.create = function (req, res){
 				res.render('quizes/new', {quiz: quiz, errors: err.errors});
 			} else {
 				quiz
-				.save({fields: ["pregunta", "respuesta"]})
+				.save({fields: ["pregunta", "respuesta", "UserId"]})
 				.then( function(){ res.redirect('/quizes')})
 			}
-		});
+		}).catch(function(error){next(error)});
 };
 
 
